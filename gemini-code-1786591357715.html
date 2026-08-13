@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Calculator - Financial Calculators & Tools</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); padding-bottom: 40px; }
+
+    header {
+      background: var(--primary);
+      color: white;
+      text-align: center;
+      padding: 2rem 1rem;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    }
+    header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    header p { font-size: 1.1rem; opacity: 0.9; }
+
+    .nav-tabs {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      background: #ffffff;
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .tab-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 0.6rem 1.2rem;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+    }
+    .tab-btn.active, .tab-btn:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .container { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+
+    .calc-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border: 1px solid var(--border);
+      display: none;
+    }
+    .calc-card.active { display: block; }
+
+    .card-header { display: flex; align-items: center; gap: 15px; margin-bottom: 1rem; }
+    .card-icon { width: 48px; height: 48px; fill: var(--primary); flex-shrink: 0; }
+    .card-title h2 { font-size: 1.5rem; }
+    
+    .summary-box {
+      background: #eff6ff;
+      border-left: 4px solid var(--primary);
+      padding: 1rem;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 1.5rem;
+      color: #1e40af;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .form-group { margin-bottom: 1.2rem; }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 0.4rem; font-size: 0.9rem; }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    .form-group input:focus { outline: none; border-color: var(--primary); }
+
+    .calc-btn {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.85rem;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+    .calc-btn:hover { background: var(--primary-dark); }
+
+    .results {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px dashed var(--border);
+    }
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.8rem;
+      font-size: 1rem;
+    }
+    .result-row.highlight {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.8rem; }
+      .calc-card { padding: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <h1>My Calculator</h1>
+    <p>All-In-One Financial Planning & Investment Tools</p>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('sip')">SIP Calculator</button>
+    <button class="tab-btn" onclick="switchTab('swp')">SWP Calculator</button>
+    <button class="tab-btn" onclick="switchTab('mf')">Mutual Fund</button>
+    <button class="tab-btn" onclick="switchTab('fd')">FD Calculator</button>
+    <button class="tab-btn" onclick="switchTab('tax')">Income Tax</button>
+  </div>
+
+  <div class="container">
+
+    <!-- 1. SIP CALCULATOR -->
+    <div id="sip" class="calc-card active">
+      <div class="card-header">
+        <svg class="card-icon" viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+        <div class="card-title">
+          <h2>SIP Calculator</h2>
+        </div>
+      </div>
+      <div class="summary-box">
+        <strong>What is SIP?</strong> A Systematic Investment Plan (SIP) allows you to invest a fixed amount regularly (monthly) into mutual funds. It helps compound wealth over time while averaging market volatility.
+      </div>
+      <div class="form-group">
+        <label>Monthly Investment (₹)</label>
+        <input type="number" id="sip-monthly" value="5000">
+      </div>
+      <div class="form-group">
+        <label>Expected Return Rate (% p.a.)</label>
+        <input type="number" id="sip-rate" value="12" step="0.1">
+      </div>
+      <div class="form-group">
+        <label>Investment Duration (Years)</label>
+        <input type="number" id="sip-years" value="10">
+      </div>
+      <button class="calc-btn" onclick="calcSIP()">Calculate Returns</button>
+      
+      <div class="results" id="sip-results">
+        <div class="result-row"><span>Total Invested:</span><span id="sip-invested">₹0</span></div>
+        <div class="result-row"><span>Estimated Gain:</span><span id="sip-gain">₹0</span></div>
+        <div class="result-row highlight"><span>Total Maturity Value:</span><span id="sip-total">₹0</span></div>
+      </div>
+    </div>
+
+    <!-- 2. SWP CALCULATOR -->
+    <div id="swp" class="calc-card">
+      <div class="card-header">
+        <svg class="card-icon" viewBox="0 0 24 24"><path d="M16 18l2.29-2.29-4.88-4.88-4 4L2 7.41 3.41 6l6 6 4-4 6.3 6.29L22 12v6z"/></svg>
+        <div class="card-title">
+          <h2>SWP Calculator</h2>
+        </div>
+      </div>
+      <div class="summary-box">
+        <strong>What is SWP?</strong> A Systematic Withdrawal Plan (SWP) allows you to withdraw a fixed amount regularly from your existing mutual fund investment, providing regular cash flow for retirement or recurring expenses.
+      </div>
+      <div class="form-group">
+        <label>Total Investment Amount (₹)</label>
+        <input type="number" id="swp-total-inv" value="1000000">
+      </div>
+      <div class="form-group">
+        <label>Monthly Withdrawal Amount (₹)</label>
+        <input type="number" id="swp-withdrawal" value="8000">
+      </div>
+      <div class="form-group">
+        <label>Expected Return Rate (% p.a.)</label>
+        <input type="number" id="swp-rate" value="8" step="0.1">
+      </div>
+      <div class="form-group">
+        <label>Duration (Years)</label>
+        <input type="number" id="swp-years" value="5">
+      </div>
+      <button class="calc-btn" onclick="calcSWP()">Calculate Balance</button>
+
+      <div class="results">
+        <div class="result-row"><span>Total Withdrawn:</span><span id="swp-withdrawn">₹0</span></div>
+        <div class="result-row highlight"><span>Remaining Portfolio Value:</span><span id="swp-remaining">₹0</span></div>
+      </div>
+    </div>
+
+    <!-- 3. MUTUAL FUND RETURN CALCULATOR -->
+    <div id="mf" class="calc-card">
+      <div class="card-header">
+        <svg class="card-icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+        <div class="card-title">
+          <h2>Mutual Fund Lumpsum Calculator</h2>
+        </div>
+      </div>
+      <div class="summary-box">
+        <strong>What is Lumpsum Mutual Fund Investment?</strong> Investing a single one-time sum into a mutual fund scheme. Compound interest accelerates returns over long investment horizons.
+      </div>
+      <div class="form-group">
+        <label>Total Lumpsum Investment (₹)</label>
+        <input type="number" id="mf-amount" value="100000">
+      </div>
+      <div class="form-group">
+        <label>Expected Return Rate (% p.a.)</label>
+        <input type="number" id="mf-rate" value="12" step="0.1">
+      </div>
+      <div class="form-group">
+        <label>Time Period (Years)</label>
+        <input type="number" id="mf-years" value="5">
+      </div>
+      <button class="calc-btn" onclick="calcMF()">Calculate Lumpsum Return</button>
+
+      <div class="results">
+        <div class="result-row"><span>Invested Amount:</span><span id="mf-invested">₹0</span></div>
+        <div class="result-row"><span>Estimated Wealth Gain:</span><span id="mf-gain">₹0</span></div>
+        <div class="result-row highlight"><span>Total Future Value:</span><span id="mf-total">₹0</span></div>
+      </div>
+    </div>
+
+    <!-- 4. FD CALCULATOR -->
+    <div id="fd" class="calc-card">
+      <div class="card-header">
+        <svg class="card-icon" viewBox="0 0 24 24"><path d="M4 10h16v2H4zm0-4h16v2H4zm0 8h16v2H4zm0 4h16v2H4z"/></svg>
+        <div class="card-title">
+          <h2>Fixed Deposit (FD) Calculator</h2>
+        </div>
+      </div>
+      <div class="summary-box">
+        <strong>What is a Fixed Deposit?</strong> A safe investment offered by banks and financial institutions where money is deposited for a fixed period at a guaranteed interest rate (compounded quarterly).
+      </div>
+      <div class="form-group">
+        <label>Deposit Principal (₹)</label>
+        <input type="number" id="fd-principal" value="100000">
+      </div>
+      <div class="form-group">
+        <label>Annual Interest Rate (%)</label>
+        <input type="number" id="fd-rate" value="7" step="0.1">
+      </div>
+      <div class="form-group">
+        <label>Tenure (Years)</label>
+        <input type="number" id="fd-years" value="3">
+      </div>
+      <button class="calc-btn" onclick="calcFD()">Calculate Maturity</button>
+
+      <div class="results">
+        <div class="result-row"><span>Principal Amount:</span><span id="fd-invested">₹0</span></div>
+        <div class="result-row"><span>Interest Earned:</span><span id="fd-interest">₹0</span></div>
+        <div class="result-row highlight"><span>Maturity Amount:</span><span id="fd-total">₹0</span></div>
+      </div>
+    </div>
+
+    <!-- 5. INCOME TAX CALCULATOR -->
+    <div id="tax" class="calc-card">
+      <div class="card-header">
+        <svg class="card-icon" viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1H6.32c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+        <div class="card-title">
+          <h2>Income Tax Calculator (India)</h2>
+        </div>
+      </div>
+      <div class="summary-box">
+        <strong>Understanding Income Tax (New Tax Regime):</strong> Income tax is levied by the central government on total taxable income. Under the default New Regime, basic tax rebates apply for lower brackets, plus a standard deduction of ₹75,000 for salaried employees.
+      </div>
+      <div class="form-group">
+        <label>Gross Annual Income (₹)</label>
+        <input type="number" id="tax-income" value="900000">
+      </div>
+      <div class="form-group">
+        <label>Salaried Employee?</label>
+        <select id="tax-type">
+          <option value="salaried">Yes (Standard Deduction ₹75,000 applied)</option>
+          <option value="other">No / Self-Employed</option>
+        </select>
+      </div>
+      <button class="calc-btn" onclick="calcTax()">Calculate Tax</button>
+
+      <div class="results">
+        <div class="result-row"><span>Taxable Income:</span><span id="tax-taxable">₹0</span></div>
+        <div class="result-row highlight"><span>Estimated Total Tax Payable:</span><span id="tax-total">₹0</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Tab Switch Logic
+    function switchTab(tabId) {
+      document.querySelectorAll('.calc-card').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      
+      document.getElementById(tabId).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    // Helper Currency Formatter
+    function formatINR(val) {
+      return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(val);
+    }
+
+    // 1. SIP Calculation
+    function calcSIP() {
+      const P = parseFloat(document.getElementById('sip-monthly').value) || 0;
+      const i = (parseFloat(document.getElementById('sip-rate').value) || 0) / 12 / 100;
+      const n = (parseFloat(document.getElementById('sip-years').value) || 0) * 12;
+
+      const totalValue = P * ((Math.pow(1 + i, n) - 1) / i) * (1 + i);
+      const invested = P * n;
+      const gain = totalValue - invested;
+
+      document.getElementById('sip-invested').innerText = formatINR(invested);
+      document.getElementById('sip-gain').innerText = formatINR(gain);
+      document.getElementById('sip-total').innerText = formatINR(totalValue);
+    }
+
+    // 2. SWP Calculation
+    function calcSWP() {
+      let balance = parseFloat(document.getElementById('swp-total-inv').value) || 0;
+      const W = parseFloat(document.getElementById('swp-withdrawal').value) || 0;
+      const r = (parseFloat(document.getElementById('swp-rate').value) || 0) / 100;
+      const months = (parseFloat(document.getElementById('swp-years').value) || 0) * 12;
+      const monthlyRate = r / 12;
+
+      let totalWithdrawn = 0;
+
+      for (let m = 0; m < months; m++) {
+        balance = balance * (1 + monthlyRate) - W;
+        totalWithdrawn += W;
+        if (balance < 0) { balance = 0; break; }
+      }
+
+      document.getElementById('swp-withdrawn').innerText = formatINR(totalWithdrawn);
+      document.getElementById('swp-remaining').innerText = formatINR(balance);
+    }
+
+    // 3. Lumpsum Mutual Fund Calculation
+    function calcMF() {
+      const P = parseFloat(document.getElementById('mf-amount').value) || 0;
+      const r = (parseFloat(document.getElementById('mf-rate').value) || 0) / 100;
+      const t = parseFloat(document.getElementById('mf-years').value) || 0;
+
+      const totalValue = P * Math.pow((1 + r), t);
+      const gain = totalValue - P;
+
+      document.getElementById('mf-invested').innerText = formatINR(P);
+      document.getElementById('mf-gain').innerText = formatINR(gain);
+      document.getElementById('mf-total').innerText = formatINR(totalValue);
+    }
+
+    // 4. Fixed Deposit Calculation (Quarterly Compounding)
+    function calcFD() {
+      const P = parseFloat(document.getElementById('fd-principal').value) || 0;
+      const r = (parseFloat(document.getElementById('fd-rate').value) || 0) / 100;
+      const t = parseFloat(document.getElementById('fd-years').value) || 0;
+      const n = 4; // Quarterly
+
+      const totalValue = P * Math.pow((1 + r/n), n * t);
+      const interest = totalValue - P;
+
+      document.getElementById('fd-invested').innerText = formatINR(P);
+      document.getElementById('fd-interest').innerText = formatINR(interest);
+      document.getElementById('fd-total').innerText = formatINR(totalValue);
+    }
+
+    // 5. Income Tax Calculation (India New Regime Slabs)
+    function calcTax() {
+      let income = parseFloat(document.getElementById('tax-income').value) || 0;
+      const isSalaried = document.getElementById('tax-type').value === 'salaried';
+
+      if (isSalaried) income = Math.max(0, income - 75000); // Standard Deduction
+
+      let tax = 0;
+
+      // New Tax Regime Slabs
+      if (income > 300000) {
+        if (income <= 700000) {
+          // Full Section 87A rebate applies if income after std deduction <= 7,000,00
+          tax = 0;
+        } else {
+          if (income > 300000) tax += Math.min(income - 300000, 400000) * 0.05;
+          if (income > 700000) tax += Math.min(income - 700000, 300000) * 0.10;
+          if (income > 1000000) tax += Math.min(income - 1000000, 200000) * 0.15;
+          if (income > 1200000) tax += Math.min(income - 1200000, 300000) * 0.20;
+          if (income > 1500000) tax += (income - 1500000) * 0.30;
+
+          tax = tax * 1.04; // 4% Cess
+        }
+      }
+
+      document.getElementById('tax-taxable').innerText = formatINR(income);
+      document.getElementById('tax-total').innerText = formatINR(tax);
+    }
+
+    // Initial calculation runs on load
+    window.onload = function() {
+      calcSIP();
+      calcSWP();
+      calcMF();
+      calcFD();
+      calcTax();
+    };
+  </script>
+</body>
+</html>
